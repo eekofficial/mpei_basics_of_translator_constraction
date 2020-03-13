@@ -80,11 +80,41 @@ def infix_to_postfix(s):
 
     return ' '.join(postfix_s)
 
+def evaluate(postfix_s):
+    op_stack = Stack()
+    operands = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    token_list = postfix_s.split()
+    variables = dict()
+
+    for token in token_list:
+        if token in operands:
+            if token not in variables:
+                variables[token] = float(input('Please, enter operand {}: '.format(token)))
+            op_stack.push(variables[token])
+        else:
+            operand2 = op_stack.pop()
+            operand1 = op_stack.pop()
+            result = do_math(token, operand1, operand2)
+            op_stack.push(result)
+    return op_stack.pop()
+
+def do_math(op, op1, op2):
+    if op == '*':
+        return op1 * op2
+    elif op == '/':
+        return op1 / op2
+    elif op == '+':
+        return op1 + op2
+    elif op == '-':
+        return op1 - op2
+
 
 if __name__ == '__main__':
     if INPUT_LOOP:
         s = ''
         while s != 'exit':
-            s = input()
+            s = input('Please, enter infix expression:')
             if s != 'exit':
-                print(infix_to_postfix(s))
+                postfix_s = infix_to_postfix(s)
+                print(postfix_s)
+                print(evaluate(postfix_s))
